@@ -1368,3 +1368,31 @@ def test_bedrock_invoke_anthropic_max_tokens():
 
     assert "max_tokens_to_sample" not in optional_params
     assert optional_params["max_tokens"] == 1024
+
+
+def test_azure_modalities_param():
+    optional_params = get_optional_params(
+        model="chatgpt-v2",
+        custom_llm_provider="azure",
+        modalities=["text", "audio"],
+        audio={"type": "audio_input", "input": "test.wav"},
+    )
+    assert optional_params["modalities"] == ["text", "audio"]
+    assert optional_params["audio"] == {"type": "audio_input", "input": "test.wav"}
+
+@pytest.mark.parametrize(
+    "model, provider",
+    [
+        ("claude-3-7-sonnet-20240620-v1:0", "anthropic"),
+        ("anthropic.claude-3-7-sonnet-20250219-v1:0", "bedrock"),
+        ("invoke/anthropic.claude-3-7-sonnet-20240620-v1:0", "bedrock"),
+        ("claude-3-7-sonnet@20250219", "vertex_ai"),
+    ],
+)
+def test_anthropic_unified_reasoning_content(model, provider):
+    optional_params = get_optional_params(
+        model=model,
+        custom_llm_provider=provider,
+        reasoning_effort="high",
+    )
+    assert optional_params["thinking"] == {"type": "enabled", "budget_tokens": 4096}

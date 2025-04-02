@@ -1,6 +1,6 @@
 model_list:
-  - model_name: gpt-4o
+  - model_name: fake-openai-endpoint
     litellm_params:
-      model: gpt-4o
-
-
+      model: openai/fake
+      api_key: fake-key
+      api_base: https://exampleopenaiendpoint-production.up.railway.app/
